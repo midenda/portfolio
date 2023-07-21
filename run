@@ -1,0 +1,9 @@
+#!/bin/zsh -m
+node backend/src/js/fetch.js
+dotnet run --project ./backend/backend.csproj --nobuild &!
+trap "kill -- $!" SIGTERM;
+export server=$!;
+alias serverprocess="ps ax | grep \"$!\";"
+alias quit="kill -- $!; unset server";
+alias reload="quit && . ./brun";
+clear;

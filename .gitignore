@@ -1,0 +1,12 @@
+.DS_store
+.env
+.vscode/
+__pycache__/
+*.icloud
+*.dSYM/
+node_modules/
+private/
+bin/
+obj/
+js/
+frontend/public/content/
