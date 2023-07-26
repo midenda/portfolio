@@ -7,10 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fetch": "node backend/src/js/fetch.js",
-    "cleanup:frontend": "rm -rf ./frontend/src/js/* && rm -rf ./frontend/public/js/*",
-    "cleanup:backend": "rm -rf ./backend/js/*",
-    "tsc:frontend": "tsc -p ./frontend/tsconfig.json",
-    "tsc:backend": "tsc -p ./backend/tsconfig.json",
+    "cleanup:frontend": "rm -rf frontend/src/js/* && rm -rf frontend/public/js/*",
+    "cleanup:backend": "rm -rf backend/js/*",
+    "tsc:frontend": "tsc -p frontend/tsconfig.json",
+    "tsc:backend": "tsc -p backend/tsconfig.json",
     "babel:frontend": "babel --extensions .ts,.tsx frontend/src --out-dir frontend/src/js",
     "babel:backend": "babel --extensions .ts,.tsx backend/src  --out-dir backend/src/js",
     "build:webpack": "webpack --config frontend/webpack.config.js",
@@ -21,6 +21,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+  },
+  "dependencies": {
     "@babel/cli": "^7.20.7",
     "@babel/core": "^7.20.7",
     "@babel/preset-env": "^7.20.2",
@@ -33,9 +35,7 @@
     "style-loader": "^3.3.2",
     "typescript": "^4.9.4",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
-  },
-  "dependencies": {
+    "webpack-cli": "^5.0.1",
     "dotenv": "^16.3.1",
     "node": "^20.4.0",
     "react": "^18.2.0",
