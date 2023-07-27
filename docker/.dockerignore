@@ -1,0 +1,8 @@
+node_modules
+**/bin/
+**/obj/
+.DS_Store
+.vscode
+run
+brun
+build
