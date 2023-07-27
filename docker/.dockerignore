@@ -3,6 +3,4 @@ node_modules
 **/obj/
 .DS_Store
 .vscode
-run
-brun
-build
+dev-local
