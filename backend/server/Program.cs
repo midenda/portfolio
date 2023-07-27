@@ -3,7 +3,7 @@ var builder = WebApplication.CreateBuilder
         new WebApplicationOptions 
         {
             // ContentRootPath = "/Users/Zorli/Desktop/Code/portfolio/backend",
-            WebRootPath = "../frontend/public"
+            WebRootPath = "../../frontend/public"
         }
     );
 
