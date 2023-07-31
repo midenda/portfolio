@@ -11,7 +11,12 @@ const items = data;
 const App: React.FC <{}> = props => {
   return (
     <div>
+
+      <h1>Portfolio</h1>
+      <p> A description of my software projects and skills </p>
+
       { items.map (mapShowcaseItem) }
+      
     </div>
   );
 };
