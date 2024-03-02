@@ -20,7 +20,7 @@ const contentTypes =
     jpeg:       "image/jpeg"
   };
 
-const token = process.env.TOKEN;
+const token = process.env.GITHUB_AUTH_TOKEN;
   
 async function fetch (url: string)
 {
