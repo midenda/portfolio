@@ -30,7 +30,7 @@ RUN npm install
 
 COPY . .
 
-RUN --mount-type=secret,id=token GITHUB_AUTH_TOKEN=$(cat /run/secrets/token) \
+RUN --mount=type=secret,id=token GITHUB_AUTH_TOKEN=$(cat /run/secrets/token) \
 npm run --prefix ./ build
 
 
