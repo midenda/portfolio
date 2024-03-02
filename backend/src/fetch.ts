@@ -21,6 +21,10 @@ const contentTypes =
   };
 
 const token = process.env.GITHUB_AUTH_TOKEN;
+const test = process.env.TEST;
+
+console.log (`The value of test is: ${test}`);
+console.log (`Is test == "This is a test secret!!"? ${test == "This is a test secret!!"}`);
   
 async function fetch (url: string)
 {
