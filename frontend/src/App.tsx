@@ -3,10 +3,9 @@ import ShowcaseItem from "./components/ShowcaseItem";
 import mapShowcaseItem from "./components/ShowcaseItem";
 
 import data from "frontend/public/content/Repositories.json";
-// import data from "../public/content/Repositories.json";
 
-const items = data;
 
+const items: any[] = data.repositories;
 
 const App: React.FC <{}> = props => {
   return (

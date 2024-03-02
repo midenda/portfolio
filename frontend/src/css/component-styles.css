@@ -5,3 +5,23 @@
   padding: 10px; 
   background-color: #8CA9C5;
 }
+
+.LatestCommit
+{
+  font-style: italic;
+}
+
+.LatestCommit ul
+{
+  display: block;
+}
+
+.LatestCommit b .Additions
+{
+  color: green;
+}
+
+.LatestCommit b .Deletions
+{
+  color: red;
+}
