@@ -30,7 +30,8 @@ RUN npm install
 
 COPY . .
 
-RUN npm run --prefix ./ build
+RUN --mount-type=secret,id=token GITHUB_AUTH_TOKEN=$(cat /run/secrets/token) \
+npm run --prefix ./ build
 
 
 # Configure runtime environment

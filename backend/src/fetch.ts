@@ -5,7 +5,7 @@ import { writeFileSync, mkdirSync } from "fs";
 
 import formatTime from "./datetime";
 
-if (process.env.NODE_ENV == "development")
+if (process.env.NODE_ENV != "production")
 {
   require ("dotenv").config ();
 };
@@ -24,11 +24,7 @@ const contentTypes =
   };
 
 const token = process.env.GITHUB_AUTH_TOKEN;
-const test = process.env.TEST;
 
-console.log (`The value of test is: ${test}`);
-console.log (`Is test == "This is a test secret!!"? ${test == "This is a test secret!!"}`);
-  
 async function fetch (url: string)
 {
   const method = "GET";

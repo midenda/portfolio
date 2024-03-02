@@ -15,9 +15,6 @@ env:
   ECS_CLUSTER:          portfolio-cluster
   ECS_TASK_DEFINITION:  .aws/portfolio-task.json
   CONTAINER_NAME:       portfolio-container
-  NODE_ENV:             production
-  GITHUB_AUTH_TOKEN:    ${{ secrets.TOKEN }}
-  TEST:                 ${{ secrets.TEST }}
 
 jobs:
   deploy:
@@ -44,12 +41,11 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
         GITHUB_AUTH_TOKEN: ${{ secrets.TOKEN }}
-        TEST:              ${{ secrets.TEST }}
       run: |
-        echo "The result of test: "
-        echo $TEST
-        env
-        docker build . -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f docker/Dockerfile
+        docker build . \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          -f docker/Dockerfile \
+          --secret id=token,env=GITHUB_AUTH_TOKEN
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
