@@ -7,16 +7,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fetch": "node backend/src/js/fetch.js",
-    "cleanup:frontend": "rm -rf frontend/src/js/* && rm -rf frontend/public/js/*",
-    "cleanup:backend":  "rm -rf backend/js/*",
+    "cleanup": "rm -rf frontend/{src/js/*,public/js/*,public/content/*} && rm -rf backend/js/*",
     "tsc:frontend": "tsc -p frontend/tsconfig.json",
     "tsc:backend":  "tsc -p backend/tsconfig.json",
     "babel:frontend": "babel --extensions .ts,.tsx frontend/src --out-dir frontend/src/js",
     "babel:backend":  "babel --extensions .ts,.tsx backend/src  --out-dir backend/src/js",
     "build:webpack": "webpack --config frontend/webpack.config.js",
-    "build:frontend": "npm run cleanup:frontend && npm run tsc:frontend && npm run babel:frontend && npm run build:webpack",
-    "build:backend":  "npm run cleanup:backend  && npm run tsc:backend  && npm run babel:backend",
-    "build": "npm run build:frontend && npm run build:backend && npm run fetch"
+    "build:frontend": "npm run tsc:frontend && npm run babel:frontend && npm run build:webpack",
+    "build:backend":  "npm run tsc:backend  && npm run babel:backend",
+
+    "build": "npm run cleanup && npm run build:backend && npm run fetch && npm run build:frontend"
   },
   "author": "",
   "license": "ISC",
@@ -37,7 +37,7 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "dotenv": "^16.3.1",
-    "node": "^20.4.0",
+    "node": "^21.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
