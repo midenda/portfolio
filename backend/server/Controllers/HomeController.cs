@@ -14,7 +14,7 @@ public class HomeController : Controller
         {
             StatusCode = 200,
             ContentType = "text/html",
-            Content = System.IO.File.ReadAllText ("../frontend/public/index.html")
+            Content = System.IO.File.ReadAllText ("../../frontend/public/index.html")
         };
     }
 };

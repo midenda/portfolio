@@ -1,11 +1,18 @@
+using Microsoft.AspNetCore;
+
 var builder = WebApplication.CreateBuilder 
     (
         new WebApplicationOptions 
         {
-            // ContentRootPath = "/Users/Zorli/Desktop/Code/portfolio/backend",
+            // ContentRootPath = "../../../../server",
             WebRootPath = "../../frontend/public"
         }
     );
+
+WebHost.CreateDefaultBuilder (args).UseKestrel (options => 
+    {
+
+    });
 
 // Console.WriteLine ($"WebRootPath: {builder.Environment.WebRootPath}");
 
@@ -25,7 +32,7 @@ if (!app.Environment.IsDevelopment ())
     app.UseHsts ();
 }
 
-app.UseHttpsRedirection ();
+// app.UseHttpsRedirection ();
 // app.UseDefaultFiles ();
 // app.UseRouting ();
 
