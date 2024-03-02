@@ -40,8 +40,6 @@ SHELL ["/bin/bash", "--login", "-c"]
 
 WORKDIR /
 
-ENV VERSION_NODE=18.17.0
-ENV ASPNETCORE_URLS=http://+:3001
 
 # Install Curl, Git, OpenSSL (AWS Amplify requirements) and tar (required to install hugo)
 RUN touch /.bashrc
@@ -60,8 +58,11 @@ RUN yum -y update && \
 # Switch to interactive mode shell for installs
 SHELL ["/bin/bash", "--login", "-i", "-c"]
 
+ENV VERSION_NODE=18.17.0
+ENV VERSION_NVM=v0.39.4
+
 # Install Node (AWS Amplify requirement)
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/${VERSION_NVM}/install.sh | bash
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${VERSION_NVM}/install.sh | bash
 RUN . ~/.nvm/nvm.sh && \
     nvm install $VERSION_NODE && nvm use $VERSION_NODE && \
     nvm alias default node && nvm cache clear
@@ -77,7 +78,8 @@ SHELL ["/bin/bash", "--login", "-c"]
 COPY --from=build-dotnet /publish /server
 COPY --from=build-node /frontend/public/ ./frontend/public
 
-EXPOSE 3000
+
 EXPOSE 3001
+EXPOSE 3000
 
 ENTRYPOINT [ "/root/.dotnet/dotnet", "server/server.dll" ]
