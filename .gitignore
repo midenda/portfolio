@@ -9,4 +9,5 @@ private/
 bin/
 obj/
 js/
+frontend/public/content/
 dev-local/
