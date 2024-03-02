@@ -15,6 +15,7 @@ env:
   ECS_CLUSTER:          portfolio-cluster
   ECS_TASK_DEFINITION:  .aws/portfolio-task.json
   CONTAINER_NAME:       portfolio-container
+  NODE_ENV:             production
   GITHUB_AUTH_TOKEN:    ${{ secrets.TOKEN }}
   TEST:                 ${{ secrets.TEST }}
 

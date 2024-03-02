@@ -5,7 +5,10 @@ import { writeFileSync, mkdirSync } from "fs";
 
 import formatTime from "./datetime";
 
-require ("dotenv").config ();
+if (process.env.NODE_ENV != "production")
+{
+  require ("dotenv").config ();
+};
 
 // Testing purposes only
 const TEST_DIRECTORY: string = "dev-local/api-test-requests";
