@@ -10,11 +10,11 @@ permissions:
 
 env:
   AWS_REGION:           eu-north-1
-  REPOSITORY:       portfolio
+  REPOSITORY:           portfolio
   ECS_SERVICE:          portfolio-service
   ECS_CLUSTER:          portfolio-cluster
   ECS_TASK_DEFINITION:  .aws/portfolio-task.json
-  CONTAINER_NAME:       portfolio-container
+  CONTAINER_NAME:       portfolio
 
 jobs:
   deploy:
