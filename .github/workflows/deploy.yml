@@ -41,11 +41,11 @@ jobs:
 
     - name: Increase ASG capacity  
       run: >
-        aws set-desired-capacity \
-          --auto-scaling-group-name portfolio-asg 
-          --desired-capacity 2 
-          --honor-cooldown false
-      if: !( ${{ env.TIME }} < 7 )
+        aws autoscaling set-desired-capacity \
+        --auto-scaling-group-name portfolio-asg \
+        --desired-capacity 2 \
+        --honor-cooldown false
+      if: ${{ env.TIME }} > 6 
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -79,8 +79,8 @@ jobs:
 
     - name: Decrease ASG capacity
       run: >
-        aws set-desired-capacity \
-          --auto-scaling-group-name portfolio-asg 
-          --desired-capacity 1 
-          --honor-cooldown false
-      if: !( ${{ env.TIME }} < 7 )
+        aws autoscaling set-desired-capacity \
+        --auto-scaling-group-name portfolio-asg \
+        --desired-capacity 1 \
+        --honor-cooldown false
+      if: ${{ env.TIME }} > 6
