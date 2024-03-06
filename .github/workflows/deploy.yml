@@ -21,6 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+
+    - name: Get Current Time
+      run: echo "TIME=$(date +'%H')" >> $GITHUB_ENV
+
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -34,6 +38,14 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Increase ASG capacity  
+      run: >
+        aws set-desired-capacity \
+          --auto-scaling-group-name portfolio-asg 
+          --desired-capacity 2 
+          --honor-cooldown false
+      if: !( ${{ env.TIME }} < 7 )
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -64,3 +76,11 @@ jobs:
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
+
+    - name: Decrease ASG capacity
+      run: >
+        aws set-desired-capacity \
+          --auto-scaling-group-name portfolio-asg 
+          --desired-capacity 1 
+          --honor-cooldown false
+      if: !( ${{ env.TIME }} < 7 )
