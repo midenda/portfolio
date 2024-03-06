@@ -40,7 +40,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v2
 
     - name: Increase ASG capacity  
-      run: >
+      run: |
         aws autoscaling set-desired-capacity \
         --auto-scaling-group-name portfolio-asg \
         --desired-capacity 2 \
