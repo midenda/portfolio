@@ -41,7 +41,7 @@ jobs:
 
     - name: Increase ASG capacity  
       run: >
-        aws set-desired-capacity \
+        aws autoscaling set-desired-capacity \
           --auto-scaling-group-name portfolio-asg 
           --desired-capacity 2 
           --honor-cooldown false
@@ -79,7 +79,7 @@ jobs:
 
     - name: Decrease ASG capacity
       run: >
-        aws set-desired-capacity \
+        aws autoscaling set-desired-capacity \
           --auto-scaling-group-name portfolio-asg 
           --desired-capacity 1 
           --honor-cooldown false
