@@ -30,14 +30,14 @@ async function fetch (url: string)
   const method = "GET";
   const data   = null;
   const auth   = "Bearer";
-  const type   = "urlencoded";
+  const type   = "application/x-www-form-urlencoded";
 
   const options = {
 
     method: method,
     url: url,
     headers: {
-        "Content-Type": contentTypes[type],
+        "Content-Type": type,
         Authorization: `${auth} ${token}`,
         Accept: "application/vnd.github+json"
     },
@@ -58,6 +58,21 @@ async function fetch (url: string)
   return request;
 }
 
+async function fetchReadme (repository: string, write: boolean = true)
+{
+  const request = await fetch (`https://api.github.com/repos/midenda/${repository}/readme`);
+
+  if (!request) return;
+
+  const README: string = Buffer.from (request.data.content, 'base64').toString ('utf8');
+
+  if (write)
+    mkdirSync     (`${TEST_DIRECTORY}/repos/${repository}`, {recursive: true});
+    writeFileSync (`${TEST_DIRECTORY}/repos/${repository}/README.md`, README);
+
+  return README;
+};
+
 async function fetchRepositories (write: boolean = false)
 {
   const request = await fetch ("https://api.github.com/users/midenda/repos?sort=pushed");
@@ -71,6 +86,7 @@ async function fetchRepositories (write: boolean = false)
       id:          item.id,
       url:         item.html_url,
       language:    item.language,
+      readme:      undefined,
       image:       undefined,
       commits:     undefined,
       latest:      undefined
@@ -183,6 +199,7 @@ async function fetchShowcase (write: boolean = false)
   {
     repository.commits = await fetchCommits (repository.name);
     repository.latest  = await fetchACommit (repository.name, repository.commits [0].sha);
+    repository.readme  = await fetchReadme  (repository.name);
   };
 
   {repositories: repositories}
