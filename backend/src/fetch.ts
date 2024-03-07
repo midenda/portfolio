@@ -160,6 +160,30 @@ async function fetchACommit (repository: string, reference: string = "heads/main
   return commit;
 }
 
+// Additions and deletions per week
+async function fetchWeeklyCodeFrequency (repository: string, write: boolean = false) 
+{
+  const request = await fetch (`https://api.github.com/repos/midenda/${repository}/stats/code_frequency`);
+
+  if (!request) return;
+
+  const activity = request.data;
+
+  return activity;
+}
+
+// Commits each day per week in the last year
+async function fetchCommitActivity (repository: string, write: boolean = false)
+{
+  const request = await fetch (`https://api.github.com/repos/midenda/${repository}/stats/commit_activity`);
+
+  if (!request) return;
+
+  const activity = request.data;
+
+  return activity;
+}
+
 async function fetchWorkflows (repository: string, write: boolean = false)
 {
   const request = await fetch (`https://api.github.com/repos/midenda/${repository}/actions/runs`);
