@@ -52,7 +52,7 @@ jobs:
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
-        GITHUB_AUTH_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_AUTH_TOKEN: auto-${{ secrets.TOKEN }}
       run: |
         docker build . \
           -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
