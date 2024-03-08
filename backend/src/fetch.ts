@@ -229,7 +229,6 @@ async function fetchShowcase (write: boolean = false)
   {repositories: repositories}
 
   if (write)
-    mkdirSync (CONTENT_ROOT);
     writeFileSync (`${CONTENT_ROOT}/Repositories.json`, JSON.stringify ({repositories: repositories}));
 
   console.log (`\n\x1b[32mSuccessfully fetched showcase\x1b[0m\n`);

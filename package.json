@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fetch": "node backend/src/js/fetch.js",
+    "fetch": "mkdir frontend/public/content/; node backend/src/js/fetch.js",
     "cleanup": "rm -rf frontend/{src/js/*,public/js/*,public/content/*} && rm -rf backend/js/*",
     "tsc:frontend": "tsc -p frontend/tsconfig.json",
     "tsc:backend":  "tsc -p backend/tsconfig.json",
