@@ -51,8 +51,8 @@ jobs:
       id: build-image
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
-        GITHUB_AUTH_TOKEN: auto-${{ secrets.TOKEN }}
+        IMAGE_TAG: auto-${{ github.sha }}
+        GITHUB_AUTH_TOKEN: ${{ secrets.TOKEN }}
       run: |
         docker build . \
           -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
