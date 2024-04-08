@@ -59,7 +59,7 @@ RUN yum -y update && \
 # Switch to interactive mode shell for installs
 SHELL ["/bin/bash", "--login", "-i", "-c"]
 
-ENV VERSION_NODE=18.17.0
+ENV VERSION_NODE=21.6.2
 ENV VERSION_NVM=v0.39.4
 
 # Install Node (AWS Amplify requirement)
