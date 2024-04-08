@@ -4,7 +4,6 @@ var builder = WebApplication.CreateBuilder
     (
         new WebApplicationOptions 
         {
-            // ContentRootPath = "../../../../server",
             WebRootPath = "../../frontend/public"
         }
     );
@@ -14,15 +13,25 @@ WebHost.CreateDefaultBuilder (args).UseKestrel (options =>
 
     });
 
-// Console.WriteLine ($"WebRootPath: {builder.Environment.WebRootPath}");
-
-
 // Add services to the container.
-// builder.Services.AddRazorPages ();
-builder.Services.AddControllersWithViews (); // TODO: What do this do
+builder.Services.AddControllersWithViews ();
 
 var app = builder.Build ();
 
+// app.Use (async (context, next) => 
+//     {
+//         await next ();
+
+//         if (context.Response.StatusCode == 404) 
+//         {
+//             if (!context.Response.HasStarted)
+//             {
+//                 context.Request.Path = "/";
+//             };
+
+//             await next ();
+//         };
+//     });
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment ())
@@ -41,30 +50,22 @@ app.UseStaticFiles ();
 
 // app.UseAuthorization ();
 
-// app.Use ((context, next) => { return next (context); }); // Middleware definition
-
-// app.MapRazorPages ();
-
-// app.MapGet("/", () => Server);
-// app.MapGet("/", (HttpContext context) => 
-// { 
-//     Console.WriteLine ($"\n\nEndpoint: {context.GetEndpoint ()}\n\n");
-//     return "/frontend/public/index.html";
-// }).WithDisplayName ("Home");
-
 app.MapControllerRoute
 (
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
+    name: "project",
+    pattern: "/projects/{project}", 
+    defaults: new { controller = "Projects", action = "Render" }
 );
 
+//? Should these be different actions on the same controller?
+
 app.MapControllerRoute
 (
-    name: "default",
-    pattern: "/{route?}",
+    name: "index",
+    pattern: "/", 
     defaults: new { controller = "Home", action = "Index" }
 );
 
-app.MapFallbackToFile ("fallback.html");
+app.MapFallbackToFile ("not-found.html");
 
 app.Run (); 
