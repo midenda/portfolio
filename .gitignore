@@ -11,3 +11,4 @@ obj/
 js/
 frontend/public/content/
 dev-local/
+*.sln
