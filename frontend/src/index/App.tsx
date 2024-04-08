@@ -1,21 +1,23 @@
 import React from "react";
-import ShowcaseItem from "./components/ShowcaseItem";
-import mapShowcaseItem from "./components/ShowcaseItem";
+import mapShowcaseItem from "../components/ShowcaseItem.js";
+import Footing from "../components/Footing.js";
+import Heading from "../components/Heading.js";
 
 import data from "frontend/public/content/Repositories.json";
 
 
 const items: any[] = data.repositories;
 
-const App: React.FC <{}> = props => {
+const App: React.FC <{}> = () => {
   return (
     <div>
 
-      <h1>Portfolio</h1>
-      <p> A description of my software projects and skills </p>
+      <Heading />
 
       { items.map (mapShowcaseItem) }
       
+      <Footing />
+
     </div>
   );
 };
