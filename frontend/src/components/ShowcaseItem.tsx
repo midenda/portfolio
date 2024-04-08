@@ -1,5 +1,5 @@
 import React from "react";
-import LatestCommit from "./LatestCommit";
+import LatestCommit from "./LatestCommit.js";
 
 export interface Props
 {

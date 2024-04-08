@@ -3,13 +3,14 @@ const path = require ('path');
 module.exports = 
 {
   entry: 
-  [
-    './frontend/src/js/index.js'
-  ],
+  {
+    index:   'frontend/src/js/index/index.js',
+    project: 'frontend/src/js/project/project.js'
+  },
 
   output: 
   {
-    filename: 'index.js',
+    filename: '[name].js',
     path: path.resolve (__dirname, 'public/js'),
     clean: true
   },
@@ -24,6 +25,8 @@ module.exports =
       }
     ]
   },
+
+  // context: path.resolve (__dirname, './'),
 
   resolve:
   {
