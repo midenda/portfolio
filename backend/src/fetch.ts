@@ -3,11 +3,12 @@
 import axios                        from "axios";
 import { writeFileSync, mkdirSync } from "fs";
 
-import formatTime from "./datetime";
+import formatTime from "./datetime.js";
+import { config } from "dotenv";
 
 if (process.env.NODE_ENV != "production")
 {
-  require ("dotenv").config ();
+  config ();
 };
 
 // Testing purposes only
@@ -25,6 +26,16 @@ const contentTypes =
 
 const token = process.env.GITHUB_AUTH_TOKEN;
 
+function replaceReservedCharacters (input: string): string
+{
+  return input
+    .replace ("<", "&lt;")
+    .replace (">", "&gt;")
+    .replace ("&", "&amp;")
+    .replace ('"', "&quot;")
+    .replace ("'", "&apos;");
+}
+
 async function fetch (url: string)
 {
   const method = "GET";
@@ -39,7 +50,8 @@ async function fetch (url: string)
     headers: {
         "Content-Type": type,
         Authorization: `${auth} ${token}`,
-        Accept: "application/vnd.github+json"
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
     },
 
     data: data
@@ -160,6 +172,55 @@ async function fetchACommit (repository: string, reference: string = "heads/main
   return commit;
 }
 
+async function fetchPathContents (repository: string, path: string, write: boolean = false)
+{
+  const request = await fetch (`https://api.github.com/repos/midenda/${repository}/contents/${path}`);
+
+  if (!request) return;
+
+  const isFile: boolean = !(request.data.constructor === Array);
+
+  let contents:  any;
+  let directory: string;
+  let filename:  string;
+
+  if (isFile)
+  {
+    contents = 
+    {
+      name:    request.data.name,
+      path:    request.data.path,
+      type:    request.data.type,
+      content: Buffer.from (request.data.content, "base64").toString ("utf8")
+    };
+
+    directory = path.split ("/").slice (0, -1).join ("/");
+    filename  = `${contents.name}.json`;
+  }
+  else
+  {
+    contents = request.data.map ((item: any) => 
+      ({
+        name:    item.name,
+        path:    item.path,
+        type:    item.type,
+        content: undefined
+      })
+    );
+
+    directory = path;
+    filename  = "directory-index.json";
+  };
+
+  if (write)
+  {
+    mkdirSync     (`${TEST_DIRECTORY}/repos/${repository}/contents/${directory}`);
+    writeFileSync (`${TEST_DIRECTORY}/repos/${repository}/contents/${directory}/${filename}`, JSON.stringify (contents));
+  };
+  
+  return contents;
+}
+
 // Additions and deletions per week
 async function fetchWeeklyCodeFrequency (repository: string, write: boolean = false) 
 {
@@ -209,13 +270,38 @@ async function fetchWorkflows (repository: string, write: boolean = false)
   return run;
 }
 
+async function fetchCodePreview (repository: string, path: string, write: boolean = false) 
+{
+
+  const file = await fetchPathContents (repository, path, false);
+  // {name, path, type, content} => { name, caption, preview }
+
+  if (!file) 
+  {
+    console.error (`\n\x1b[31mfetchCodePreview failed (empty response) \x1b[0m\n`);
+    return;
+  };
+
+  const preview = 
+  {
+    name: file.name,
+    caption: `Preview of ${file.path}`, //TODO: Improve preview caption generation
+    content: replaceReservedCharacters (`${file.name}\n\n${file.content}`) //TODO: Search through file for content
+  };
+
+  if (write)
+    writeFileSync (`${CONTENT_ROOT}/${repository}-preview.js`, `export default ${ JSON.stringify (preview) };`);
+
+  console.log (`\n\x1b[32mSuccessfully fetched code previews \x1b[0m\n`);
+}
+
 async function fetchShowcase (write: boolean = false)
 {
   let repositories = await fetchRepositories ();
 
   if (!repositories) 
   {
-    console.error (`\n\x1b[31mfetchShowcase failed (empty response)\x1b[0m\n`);
+    console.error (`\n\x1b[31mfetchShowcase failed (empty response) \x1b[0m\n`);
     return;
   };
 
@@ -226,12 +312,11 @@ async function fetchShowcase (write: boolean = false)
     repository.readme  = await fetchReadme  (repository.name);
   };
 
-  {repositories: repositories}
-
   if (write)
     writeFileSync (`${CONTENT_ROOT}/Repositories.json`, JSON.stringify ({repositories: repositories}));
 
-  console.log (`\n\x1b[32mSuccessfully fetched showcase\x1b[0m\n`);
+  console.log (`\n\x1b[32mSuccessfully fetched showcase \x1b[0m\n`);
 }
 
 fetchShowcase (true);
+fetchCodePreview ("ml", "ml.h", true);
