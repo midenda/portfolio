@@ -4,6 +4,7 @@ import axios                        from "axios";
 import { writeFileSync, mkdirSync } from "fs";
 
 import formatTime from "./datetime.js";
+import { replaceReservedCharacters, errorText, successText } from "./text.js";
 import { config } from "dotenv";
 
 if (process.env.NODE_ENV != "production")
@@ -26,15 +27,6 @@ const contentTypes =
 
 const token = process.env.GITHUB_AUTH_TOKEN;
 
-function replaceReservedCharacters (input: string): string
-{
-  return input
-    .replace ("<", "&lt;")
-    .replace (">", "&gt;")
-    .replace ("&", "&amp;")
-    .replace ('"', "&quot;")
-    .replace ("'", "&apos;");
-}
 
 async function fetch (url: string)
 {
@@ -62,11 +54,11 @@ async function fetch (url: string)
 
   if (request.status != 200)
   {
-    console.error (`\n\x1b[31mFetch Unsuccessful (response code ${request.status})\x1b[0m\n`);
+    console.error (errorText (`Fetch Unsuccessful (response code ${request.status})`));
     return false;
   };
 
-  // console.log (`\n\x1b[32mFetch Successful (response code ${request.status})\x1b[0m\n`);
+  // console.log (successText (`Fetch Successful (response code ${request.status})`));
   return request;
 }
 
@@ -278,7 +270,7 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
 
   if (!file) 
   {
-    console.error (`\n\x1b[31mfetchCodePreview failed (empty response) \x1b[0m\n`);
+    console.error (errorText (`fetchCodePreview failed (empty response)`));
     return;
   };
 
@@ -292,7 +284,7 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
   if (write)
     writeFileSync (`${CONTENT_ROOT}/${repository}-preview.js`, `export default ${ JSON.stringify (preview) };`);
 
-  console.log (`\n\x1b[32mSuccessfully fetched code previews \x1b[0m\n`);
+  console.log (successText ("Successfully fetched code previews"));
 }
 
 async function fetchShowcase (write: boolean = false)
@@ -315,7 +307,7 @@ async function fetchShowcase (write: boolean = false)
   if (write)
     writeFileSync (`${CONTENT_ROOT}/Repositories.json`, JSON.stringify ({repositories: repositories}));
 
-  console.log (`\n\x1b[32mSuccessfully fetched showcase \x1b[0m\n`);
+  console.log (successText ("\n\x1b[32mSuccessfully fetched showcase \x1b[0m\n"));
 }
 
 fetchShowcase (true);
