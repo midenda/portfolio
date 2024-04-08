@@ -8,7 +8,7 @@ namespace sense.Controllers;
 public class HomeController : Controller
 {
     [HttpGet]
-    public ContentResult Index (int id) 
+    public ContentResult Index () 
     {
         return new ContentResult 
         {
