@@ -3,8 +3,8 @@
 import axios                        from "axios";
 import { writeFileSync, mkdirSync } from "fs";
 
-import formatTime from "./datetime.js";
-import { replaceReservedCharacters, errorText, successText } from "./text.js";
+import formatTime from "./datetime.mjs";
+import { replaceReservedCharacters, errorText, successText } from "./text.mjs";
 import { config } from "dotenv";
 
 if (process.env.NODE_ENV != "production")

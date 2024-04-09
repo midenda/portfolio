@@ -41,7 +41,6 @@ SHELL ["/bin/bash", "--login", "-c"]
 
 WORKDIR /
 
-
 # Install Curl, Git, OpenSSL (AWS Amplify requirements) and tar (required to install hugo)
 RUN touch /.bashrc
 RUN yum -y update && \
