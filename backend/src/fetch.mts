@@ -270,7 +270,7 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
 
   if (!file) 
   {
-    console.error (errorText (`fetchCodePreview failed (empty response)`));
+    console.error (errorText ("fetchCodePreview failed (empty response)"));
     return;
   };
 
@@ -293,7 +293,7 @@ async function fetchShowcase (write: boolean = false)
 
   if (!repositories) 
   {
-    console.error (`\n\x1b[31mfetchShowcase failed (empty response) \x1b[0m\n`);
+    console.error (errorText ("fetchShowcase failed (empty response)"));
     return;
   };
 
@@ -307,7 +307,7 @@ async function fetchShowcase (write: boolean = false)
   if (write)
     writeFileSync (`${CONTENT_ROOT}/Repositories.json`, JSON.stringify ({repositories: repositories}));
 
-  console.log (successText ("\n\x1b[32mSuccessfully fetched showcase \x1b[0m\n"));
+  console.log (successText ("Successfully fetched showcase"));
 }
 
 fetchShowcase (true);

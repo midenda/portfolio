@@ -10,12 +10,12 @@ function replaceReservedCharacters (input: string): string
 
 function errorText (input: string): string
 {
-  return `\n\x1b[31m\ ${input} \x1b[0m\n`;
+  return `\n\x1b[31m${input} \x1b[0m\n`;
 }
 
 function successText (input: string): string
 {
-  return `\n\x1b[32m\ ${input} \x1b[0m\n`;
+  return `\n\x1b[32m${input} \x1b[0m\n`;
 }
 
 export { replaceReservedCharacters, errorText, successText }
