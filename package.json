@@ -8,13 +8,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fetch": "mkdir frontend/public/content/; node backend/src/js/fetch.mjs",
+    "set-version": "sed -i '' \"s/_COMMIT_SHA_/$COMMIT_SHA/\" frontend/src/js/components/Footing.js",
     "cleanup": "rm -rf frontend/{src/js/*,public/js/*,public/content/*} && rm -rf backend/src/js/*",
     "tsc:frontend": "tsc -p frontend/tsconfig.json",
     "tsc:backend":  "tsc -p backend/tsconfig.json",
     "babel:frontend": "babel --extensions .ts,.tsx,.mts frontend/src --out-dir frontend/src/js",
     "babel:backend":  "babel --extensions .ts,.tsx,.mts backend/src  --out-dir backend/src/js  --out-file-extension .mjs",
     "build:webpack": "webpack --config frontend/webpack.config.cjs",
-    "build:frontend": "npm run tsc:frontend && npm run babel:frontend && npm run build:webpack",
+    "build:frontend": "npm run tsc:frontend && npm run babel:frontend && npm run set-version && npm run build:webpack",
     "build:backend":  "npm run tsc:backend  && npm run babel:backend",
 
     "build": "npm run cleanup && npm run build:backend && npm run fetch && npm run build:frontend"

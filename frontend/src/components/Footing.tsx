@@ -11,6 +11,7 @@ const Footing: React.FC <{}> = () =>
         <div>
           Contact: andrew.midenda@gmail.com
         </div>
+        <small> Content generated from commit _COMMIT_SHA_ </small>
       </footer>
   </div>
   );

@@ -51,12 +51,14 @@ jobs:
       id: build-image
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        COMMIT_SHA: ${{ github.sha }}
         IMAGE_TAG: auto-${{ github.sha }}
         GITHUB_AUTH_TOKEN: ${{ secrets.TOKEN }}
       run: |
         docker build . \
           -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
           -f docker/Dockerfile \
+          --build-arg="COMMIT_SHA=$COMMIT_SHA" \
           --secret id=token,env=GITHUB_AUTH_TOKEN
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         echo "image=$REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

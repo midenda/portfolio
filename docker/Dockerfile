@@ -20,6 +20,8 @@ RUN dotnet publish -c Release -o /publish
 # Install and build relevant npm packages
 FROM node:$VERSION_NODE AS build-node
 
+ARG COMMIT_SHA
+
 WORKDIR /
 
 ENV NODE_ENV=production
