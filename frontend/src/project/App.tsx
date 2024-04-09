@@ -7,7 +7,7 @@ const preview = await import (`frontend/public/content/${project}-preview.js`);
 
 document.title = `Project: ${project}`;
 
-const Project: React.FC <{}> = props => {
+const App: React.FC <{}> = props => {
   return (
     <div>
 
@@ -21,4 +21,4 @@ const Project: React.FC <{}> = props => {
   );
 };
 
-export default Project;
+export default App;
