@@ -1,11 +1,13 @@
 function replaceReservedCharacters (input: string): string
 {
+  if (!input) { return input };
+  
   return input
-    .replace ("<", "&lt;")
-    .replace (">", "&gt;")
-    .replace ("&", "&amp;")
-    .replace ('"', "&quot;")
-    .replace ("'", "&apos;");
+    .replaceAll ("&", "&amp;")
+    .replaceAll ("<", "&lt;")
+    .replaceAll (">", "&gt;")
+    .replaceAll ('"', "&quot;")
+    .replaceAll ("'", "&apos;");
 }
 
 function errorText (input: string): string
