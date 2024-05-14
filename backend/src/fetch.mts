@@ -2,10 +2,16 @@
 
 import axios                        from "axios";
 import { writeFileSync, mkdirSync } from "fs";
+import { config }                   from "dotenv";
 
-import formatTime from "./datetime.mjs";
-import { replaceReservedCharacters, errorText, successText } from "./text.mjs";
-import { config } from "dotenv";
+import formatTime             from "./datetime.mjs";
+import { format, replaceLinks }                from "./process-md.mjs";
+import 
+{ 
+  replaceReservedCharacters, 
+  errorText, 
+  successText 
+}                             from "./text.mjs";
 
 if (process.env.NODE_ENV != "production")
 {
@@ -15,6 +21,7 @@ if (process.env.NODE_ENV != "production")
 // Testing purposes only
 const TEST_DIRECTORY: string = "dev-local/api-test-requests";
 const CONTENT_ROOT:   string = "frontend/public/content";
+const DEBUG:          boolean = true;
 
 const methods = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 const authorizations = ["Bearer", "Basic"];
@@ -46,7 +53,10 @@ async function fetch (url: string)
         "X-GitHub-Api-Version": "2022-11-28"
     },
 
-    data: data
+    data: data,
+
+    // Silence axios error responses
+    validateStatus: function (status: any) { return DEBUG ? (status >= 200 && status < 300) : true }
 
   };
 
@@ -69,12 +79,12 @@ async function fetchReadme (repository: string, write: boolean = true)
   if (!request) return;
 
   const README: string = Buffer.from (request.data.content, 'base64').toString ('utf8');
-
+  
   if (write)
     mkdirSync     (`${TEST_DIRECTORY}/repos/${repository}`, {recursive: true});
     writeFileSync (`${TEST_DIRECTORY}/repos/${repository}/README.md`, README);
 
-  return README;
+  return format (README);
 };
 
 async function fetchRepositories (write: boolean = false)
@@ -90,6 +100,7 @@ async function fetchRepositories (write: boolean = false)
       id:          item.id,
       url:         item.html_url,
       language:    item.language,
+      meta:        undefined,
       readme:      undefined,
       image:       undefined,
       commits:     undefined,
@@ -111,10 +122,10 @@ async function fetchCommits (repository: string, write: boolean = false)
 
   const commits = request.data.map ((item: any) => 
     ({
-      sha: item.sha,
-      date: formatTime (item.commit.author.date),
+      sha:     item.sha,
+      date:    formatTime (item.commit.author.date),
       message: item.commit.message,
-      url: item.url
+      url:     item.url
     })
   );
 
@@ -137,16 +148,16 @@ async function fetchACommit (repository: string, reference: string = "heads/main
 
   const commit = 
   {
-    sha: request.data.sha,
-    date: formatTime (request.data.commit.author.date),
+    sha:     request.data.sha,
+    date:    formatTime (request.data.commit.author.date),
     message: request.data.commit.message,
-    stats: request.data.stats,
+    stats:   request.data.stats,
     changes: request.data.files.map ((file: any) => 
       ({
         name: file.filename,
         stats: 
         {
-          total: file.changes, 
+          total:     file.changes, 
           additions: file.additions, 
           deletions: file.deletions
         },
@@ -247,8 +258,8 @@ async function fetchWorkflows (repository: string, write: boolean = false)
 
   const run = 
   {
-    name: workflow.name,
-    path: workflow.path,
+    name:  workflow.name,
+    path:  workflow.path,
     event: workflow.event,
     title: workflow.display_title
   };
@@ -264,9 +275,7 @@ async function fetchWorkflows (repository: string, write: boolean = false)
 
 async function fetchCodePreview (repository: string, path: string, write: boolean = false) 
 {
-
   const file = await fetchPathContents (repository, path, false);
-  // {name, path, type, content} => { name, caption, preview }
 
   if (!file) 
   {
@@ -276,9 +285,10 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
 
   const preview = 
   {
-    name: file.name,
+    name:    file.name,
     caption: `Preview of ${file.path}`, //TODO: Improve preview caption generation
-    content: replaceReservedCharacters (`${file.name}\n\n${file.content}`) //TODO: Search through file for content
+    content: replaceReservedCharacters (file.content), //TODO: Search through file for content
+    lines:   file.content.split ("\n").length || 100
   };
 
   if (write)
@@ -286,6 +296,46 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
 
   console.log (successText ("Successfully fetched code previews"));
 }
+
+async function fetchMeta (repository: string, write: boolean = false) 
+{
+  // const meta = await fetchPathContents (repository, ".meta", false); //TODO: add .meta file to repositories
+
+  const meta = {
+    portfolio:              
+    {
+      preview: "backend/src/fetch.mts"
+    },
+
+    ml:                     
+    {
+      preview: "ml.h"
+    },
+
+    Curator:                
+    {
+      preview: "request.js"
+    },
+
+    "verglas-color-theme":  
+    {
+      preview: "themes/Verglas-color-theme.json"
+    }
+  };
+
+  // if (write)
+  // {
+  //   mkdirSync     (`${TEST_DIRECTORY}/repos/${repository}`, { recursive: true });
+  //   writeFileSync (`${TEST_DIRECTORY}/repos/${repository}/.meta`, meta );
+  // };
+
+  for (let repo in meta)
+    if (repo == repository) return meta [repo as keyof typeof meta];
+
+  return false;
+
+  // return JSON.parse (meta);
+};
 
 async function fetchShowcase (write: boolean = false)
 {
@@ -302,13 +352,19 @@ async function fetchShowcase (write: boolean = false)
     repository.commits = await fetchCommits (repository.name);
     repository.latest  = await fetchACommit (repository.name, repository.commits [0].sha);
     repository.readme  = await fetchReadme  (repository.name);
+    repository.meta    = await fetchMeta    (repository.name);
+
+    await fetchCodePreview (repository.name, repository.meta.preview, true);
   };
 
   if (write)
-    writeFileSync (`${CONTENT_ROOT}/Repositories.json`, JSON.stringify ({repositories: repositories}));
+  {
+    writeFileSync (`${CONTENT_ROOT}/Repositories.js`, `export default ${ JSON.stringify (repositories) };`);
+    writeFileSync (`${CONTENT_ROOT}/Repositories.d.ts`, "export declare module 'Repositories';");
+  };
 
   console.log (successText ("Successfully fetched showcase"));
 }
 
 fetchShowcase (true);
-fetchCodePreview ("ml", "ml.h", true);
+// fetchReadme ("portfolio", false);
