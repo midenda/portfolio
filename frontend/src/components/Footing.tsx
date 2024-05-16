@@ -5,7 +5,7 @@ const year: number = new Date ().getFullYear ();
 const Footing: React.FC <{}> = () => 
 {
   return (
-  <div>
+  <div className = "Footing">
     <footer>
         <small> Copyright &copy; { year } Andrew Midenda. All rights reserved. </small>
         <div>

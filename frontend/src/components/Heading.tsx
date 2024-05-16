@@ -1,14 +1,18 @@
 import React from "react";
 
-const Heading: React.FC <{}> = () => 
+export interface Props
+{
+  title: string
+};
+
+const Heading: React.FC <Props> = (props: Props) => 
 {
   return (
-  <div>
+  <div className = "Heading">
     <header>
-
-      <h1> Portfolio </h1>
-      <p> A description of my software projects and skills </p>
         
+      <h1> { props.title } </h1>
+
       <ul>
         <li>
           <a href="/" target = "_self"> <h3> Home </h3> </a> 

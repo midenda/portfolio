@@ -16,12 +16,21 @@ export interface Props
 const ShowcaseItem: React.FC <Props> = (props: Props) => {
   return (
     <div className = "ShowcaseItem" key = { props.id } >
-      <a href =       { props.url || "" } target = "_blank">
-        <h1>          { props.name } </h1>
-        <p>           { props.description } </p>
-        <img src =    { props.image } alt = "" />
-        <LatestCommit { ...props.latest } />      
+
+      <a href = {`/projects/${ props.name }`} target = "_self" >
+
+        <h1>          { props.name }                   </h1>
+        <p>           { props.description }             </p>
+        <img  src   = { props.image }        alt = ""     />
+        
       </a>
+
+      <div id="button">
+        <a href  = { props.url || "" } target = "_blank"> View on GitHub </a>
+      </div>
+
+      <LatestCommit { ...props.latest } />      
+
     </div>
   );
 };

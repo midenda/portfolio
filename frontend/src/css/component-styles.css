@@ -1,3 +1,29 @@
+:root 
+{
+  --preview-lines: 0;
+}
+
+.Heading header
+{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.Heading header ul
+{
+  display: flex;
+  gap: 5vw;
+}
+
+.Heading header li
+{
+  display: inline-block;
+  margin: 10px 0px;
+  text-decoration: none;
+  list-style: none;
+}
+
 .ShowcaseItem
 {
   border: solid black 4pt;
@@ -24,4 +50,74 @@
 .LatestCommit b .Deletions
 {
   color: red;
+}
+
+.CodePreview 
+{
+  height: auto;
+  width: min-content;
+  background-color: lightskyblue;
+  border: solid black 2pt;
+  padding: 20px;
+  overflow: hidden;
+
+  display: block;
+}
+
+
+.CodePreview figure
+{
+  margin: 0px;
+  width: inherit;
+}
+
+.CodePreview .frame
+{
+  background-color: lightslategray;
+  overflow: hidden;
+  height: 15lh;
+  width: inherit;
+  padding: 0px;
+  margin: 0px;
+  border: 10px solid lightslategray;
+}
+
+.CodePreview pre
+{
+  display: block;
+  width: 40vw;
+  padding: 0px 10px;
+  margin: 0px;
+
+  animation: calc(0.2s * var(--preview-lines)) infinite steps(var(--preview-lines)) scroll;
+}
+
+.CodePreview pre:hover
+{
+  animation-play-state: paused;
+  width: min-content;
+  transition: 0.5s;
+}
+
+.CodePreview figcaption
+{
+  position: relative;
+}
+
+.README a
+{
+  font-style: oblique;
+  font-size: larger;
+  color: #000
+}
+
+@keyframes scroll
+{
+  from {
+    translate: 0% 0%;
+  }
+
+  to {
+    translate: 0% -100%;
+  }
 }

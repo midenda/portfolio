@@ -4,7 +4,8 @@ export interface Props
 {
   name:    string,
   caption: string,
-  content: string
+  content: string,
+  lines:   number
 };
 
 const CodePreview: React.FC <Props> = (props: Props) => 
@@ -13,9 +14,11 @@ const CodePreview: React.FC <Props> = (props: Props) =>
     <div className = "CodePreview">
       <figure>
 
-        <pre role = "img">
-          { props.content }
-        </pre>
+        <div className = "frame">
+          <pre role = "img">
+              { props.content }
+          </pre>
+        </div>
 
         <figcaption>
           { props.caption }
