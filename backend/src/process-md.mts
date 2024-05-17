@@ -83,7 +83,7 @@ export function format (markdown: string): Output
 
   for (const line of lines)
   {
-    const lineSegments: Line = replaceLinks (line.replace ("#", "")); 
+    const lineSegments: Line = replaceLinks (line.replaceAll ("#", "")); 
 
     if (line [0] == "#")
     {
