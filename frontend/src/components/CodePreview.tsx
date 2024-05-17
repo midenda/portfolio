@@ -5,7 +5,8 @@ export interface Props
   name:    string,
   caption: string,
   content: string,
-  lines:   number
+  lines:   number,
+  width:   number
 };
 
 const CodePreview: React.FC <Props> = (props: Props) => 

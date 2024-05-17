@@ -283,12 +283,22 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
     return;
   };
 
+  const lines = file.content.split ("\n");
+
+  let linewidth = 0;
+  for (const line of lines)
+  {
+    if (linewidth < line.length)
+      linewidth = line.length;
+  };
+
   const preview = 
   {
     name:    file.name,
     caption: `Preview of ${file.path}`, //TODO: Improve preview caption generation
     content: replaceReservedCharacters (file.content), //TODO: Search through file for content
-    lines:   file.content.split ("\n").length || 100
+    lines:   lines.length || 100,
+    width:   linewidth
   };
 
   if (write)

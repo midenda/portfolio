@@ -13,7 +13,8 @@ interface Preview
   name:    string,
   caption: string,
   content: string,
-  lines:   number
+  lines:   number,
+  width:   number
 };
 
 const project = window.location.pathname.split ("/")[2];
