@@ -1,0 +1,24 @@
+{
+  "portfolio":
+  {
+    "preview": "backend/src/fetch.mts",
+    "caption": "Typescript file to interface with the GitHub API. \nUsed to retrieve repositories and access their recent updates for display on the website."
+  },
+  "ml": 
+  {
+    "preview": "ml.h",
+    "caption": "C++ header file containing the main logic and definitions of "
+  },
+  "Curator":                
+  {
+    "preview": "request.js",
+    "caption": "Javascript wrapper for axios. Uses queue system to balance large volumes of API requests."
+  },
+
+  "verglas-color-theme":  
+  {
+    "preview": "themes/Verglas-color-theme.json",
+    "caption": ""
+  }
+
+}
