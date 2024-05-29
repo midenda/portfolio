@@ -7,7 +7,7 @@
   "ml": 
   {
     "preview": "ml.h",
-    "caption": "C++ header file containing the main logic and definitions of "
+    "caption": "C++ header file containing the main logic and definitions of the neural network."
   },
   "Curator":                
   {
