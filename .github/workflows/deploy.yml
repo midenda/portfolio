@@ -85,4 +85,12 @@ jobs:
           --auto-scaling-group-name portfolio-asg \
           --desired-capacity 1 \
           --no-honor-cooldown
-      if: ${{ env.TIME }} > 6
+      if: ( success() || failure() )  &&  ${{ env.TIME }} > 6
+
+    - name: Zero ASG capacity
+      run: |
+        aws autoscaling set-desired-capacity \ 
+          --auto-scaling-group-name portfolio-asg \
+          --desired-capacity 1 \
+          --no-honor-cooldown
+      if: ( success() || failure() )  &&  ${{ env.TIME }} < 7
