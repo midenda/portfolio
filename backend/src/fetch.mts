@@ -312,7 +312,7 @@ async function fetchCodePreview (repository: string, path: string, caption: stri
     name:    file.name,
     path:    file.path,
     caption: caption, //TODO: Improve preview caption generation - top level comment?
-    content: replaceReservedCharacters (file.content), //TODO: Search through file for content
+    content: file.content, //TODO: Search through file for content
     lines:   lines.length || 100,
     width:   linewidth || "40vw"
   };
