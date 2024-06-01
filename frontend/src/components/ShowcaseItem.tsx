@@ -13,7 +13,7 @@ export interface Props
   latest?:      any    | undefined
 };
 
-const ShowcaseItem: React.FC <Props> = (props: Props) => {
+export const ShowcaseItem: React.FC <Props> = (props: Props) => {
   return (
     <div className = "ShowcaseItem" key = { props.id } >
 
@@ -35,7 +35,7 @@ const ShowcaseItem: React.FC <Props> = (props: Props) => {
   );
 };
 
-function mapShowcaseItem (item: Props) 
+export function mapShowcaseItem (item: Props) 
 {
   return (
     <ShowcaseItem 

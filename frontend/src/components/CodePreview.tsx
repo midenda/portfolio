@@ -3,13 +3,14 @@ import React from "react";
 export interface Props 
 {
   name:    string,
+  path:    string,
   caption: string,
   content: string,
   lines:   number,
   width:   number
 };
 
-const CodePreview: React.FC <Props> = (props: Props) => 
+export const CodePreview: React.FC <Props> = (props: Props) => 
 { 
   return (
     <div className = "CodePreview">
@@ -22,6 +23,7 @@ const CodePreview: React.FC <Props> = (props: Props) =>
         </div>
 
         <figcaption>
+          <h3> Preview of { props.path }. </h3>
           { props.caption }
         </figcaption>
 

@@ -288,7 +288,7 @@ async function fetchWorkflows (repository: string, write: boolean = false)
   return run;
 }
 
-async function fetchCodePreview (repository: string, path: string, write: boolean = false) 
+async function fetchCodePreview (repository: string, path: string, caption: string = "", write: boolean = false) 
 {
   const file = await fetchFileContents (repository, path, false);
 
@@ -310,7 +310,8 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
   const preview = 
   {
     name:    file.name,
-    caption: `Preview of ${file.path}`, //TODO: Improve preview caption generation - top level comment?
+    path:    file.path,
+    caption: caption, //TODO: Improve preview caption generation - top level comment?
     content: replaceReservedCharacters (file.content), //TODO: Search through file for content
     lines:   lines.length || 100,
     width:   linewidth
@@ -355,7 +356,7 @@ async function fetchShowcase (write: boolean = false)
     repository.readme  = await fetchReadme  (repository.name);
     repository.meta    = meta [ repository.name as keyof typeof meta ];
 
-    await fetchCodePreview (repository.name, repository.meta.preview, true);
+    await fetchCodePreview (repository.name, repository.meta.preview, repository.meta.caption, true);
   };
 
   if (write)

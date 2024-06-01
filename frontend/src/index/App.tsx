@@ -1,7 +1,8 @@
 import React from "react";
+
 import mapShowcaseItem from "../components/ShowcaseItem.js";
-import Footing from "../components/Footing.js";
-import Heading from "../components/Heading.js";
+import Footing         from "../components/Footing.js";
+import Heading         from "../components/Heading.js";
 
 import data from "frontend/public/content/Repositories";
 
