@@ -5,7 +5,7 @@ import { writeFileSync, mkdirSync } from "fs";
 import { config }                   from "dotenv";
 
 import formatTime             from "./datetime.mjs";
-import { format, replaceLinks }                from "./process-md.mjs";
+import { format }             from "./process-md.mjs";
 import 
 { 
   replaceReservedCharacters, 
@@ -21,7 +21,7 @@ if (process.env.NODE_ENV != "production")
 // Testing purposes only
 const TEST_DIRECTORY: string = "dev-local/api-test-requests";
 const CONTENT_ROOT:   string = "frontend/public/content";
-const DEBUG:          boolean = true;
+const DEBUG:          boolean = false;
 
 const methods = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 const authorizations = ["Bearer", "Basic"];
@@ -64,7 +64,7 @@ async function fetch (url: string)
 
   if (request.status != 200)
   {
-    console.error (errorText (`Fetch Unsuccessful (response code ${request.status})`));
+    console.error (errorText (`Fetch failed with response "${request.status} ${request.statusText}". \nURL: ${url} `));
     return false;
   };
 
@@ -175,48 +175,63 @@ async function fetchACommit (repository: string, reference: string = "heads/main
   return commit;
 }
 
-async function fetchPathContents (repository: string, path: string, write: boolean = false)
+async function fetchDirectory (repository: string, path: string, write: boolean = false) 
 {
   const request = await fetch (`https://api.github.com/repos/midenda/${repository}/contents/${path}`);
 
   if (!request) return;
 
-  const isFile: boolean = !(request.data.constructor === Array);
+  if (!(request.data.constructor === Array)) return;
 
-  let contents:  any;
-  let directory: string;
-  let filename:  string;
-
-  if (isFile)
-  {
-    contents = 
-    {
-      name:    request.data.name,
-      path:    request.data.path,
-      type:    request.data.type,
-      content: Buffer.from (request.data.content, "base64").toString ("utf8")
-    };
-
-    directory = path.split ("/").slice (0, -1).join ("/");
-    filename  = `${contents.name}.json`;
-  }
-  else
-  {
-    contents = request.data.map ((item: any) => 
-      ({
-        name:    item.name,
-        path:    item.path,
-        type:    item.type,
-        content: undefined
-      })
-    );
-
-    directory = path;
-    filename  = "directory-index.json";
-  };
+  const contents = request.data.map ((item: any) => 
+    ({
+      name:    item.name,
+      path:    item.path,
+      type:    item.type
+    })
+  ) as {
+    name:    string,
+    path:    string,
+    type:    string
+  } [];
 
   if (write)
   {
+    mkdirSync     (`${TEST_DIRECTORY}/repos/${repository}/contents/${path}`);
+    writeFileSync (`${TEST_DIRECTORY}/repos/${repository}/contents/${path}/directory-index.json`, JSON.stringify (contents));
+  };
+  
+  return contents;
+};
+
+async function fetchFileContents (repository: string, path: string, write: boolean = false)
+{
+  const request = await fetch (`https://api.github.com/repos/midenda/${repository}/contents/${path}`);
+
+  if (!request) return;
+  
+  if (request.data.constructor === Array) return;
+
+  const contents = 
+  {
+    name:    request.data.name,
+    path:    request.data.path,
+    type:    request.data.type,
+    content: Buffer.from (request.data.content, "base64").toString ("utf8")
+
+  } as {
+
+    name:    string,
+    path:    string,
+    type:    string,
+    content: string
+  };
+  
+  if (write)
+  {
+    const directory: string = path.split ("/").slice (0, -1).join ("/");
+    const filename:  string = `${contents.name}.json`;
+  
     mkdirSync     (`${TEST_DIRECTORY}/repos/${repository}/contents/${directory}`);
     writeFileSync (`${TEST_DIRECTORY}/repos/${repository}/contents/${directory}/${filename}`, JSON.stringify (contents));
   };
@@ -275,7 +290,7 @@ async function fetchWorkflows (repository: string, write: boolean = false)
 
 async function fetchCodePreview (repository: string, path: string, write: boolean = false) 
 {
-  const file = await fetchPathContents (repository, path, false);
+  const file = await fetchFileContents (repository, path, false);
 
   if (!file) 
   {
@@ -295,7 +310,7 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
   const preview = 
   {
     name:    file.name,
-    caption: `Preview of ${file.path}`, //TODO: Improve preview caption generation
+    caption: `Preview of ${file.path}`, //TODO: Improve preview caption generation - top level comment?
     content: replaceReservedCharacters (file.content), //TODO: Search through file for content
     lines:   lines.length || 100,
     width:   linewidth
@@ -307,46 +322,6 @@ async function fetchCodePreview (repository: string, path: string, write: boolea
   console.log (successText ("Successfully fetched code previews"));
 }
 
-async function fetchMeta (repository: string, write: boolean = false) 
-{
-  // const meta = await fetchPathContents (repository, ".meta", false); //TODO: add .meta file to repositories
-
-  const meta = {
-    portfolio:              
-    {
-      preview: "backend/src/fetch.mts"
-    },
-
-    ml:                     
-    {
-      preview: "ml.h"
-    },
-
-    Curator:                
-    {
-      preview: "request.js"
-    },
-
-    "verglas-color-theme":  
-    {
-      preview: "themes/Verglas-color-theme.json"
-    }
-  };
-
-  // if (write)
-  // {
-  //   mkdirSync     (`${TEST_DIRECTORY}/repos/${repository}`, { recursive: true });
-  //   writeFileSync (`${TEST_DIRECTORY}/repos/${repository}/.meta`, meta );
-  // };
-
-  for (let repo in meta)
-    if (repo == repository) return meta [repo as keyof typeof meta];
-
-  return false;
-
-  // return JSON.parse (meta);
-};
-
 async function fetchShowcase (write: boolean = false)
 {
   let repositories = await fetchRepositories ();
@@ -357,19 +332,35 @@ async function fetchShowcase (write: boolean = false)
     return;
   };
 
+  const meta_json = await fetchFileContents ("portfolio", "meta.json", false);
+
+  if (!meta_json)
+  {
+    console.error (errorText ("fetchMeta failed (empty response)"));
+    return;
+  };
+
+  if (write) 
+    writeFileSync (`${CONTENT_ROOT}/meta.json`, meta_json.content);
+  
+  const meta = JSON.parse (meta_json.content);
+  const keys: string [] = Object.keys (meta);
+
   for (let repository of repositories)
   {
+    if (!(keys.includes (repository.name))) continue; // Skip repositories not mentioned in meta.json
+
     repository.commits = await fetchCommits (repository.name);
     repository.latest  = await fetchACommit (repository.name, repository.commits [0].sha);
     repository.readme  = await fetchReadme  (repository.name);
-    repository.meta    = await fetchMeta    (repository.name);
+    repository.meta    = meta [ repository.name as keyof typeof meta ];
 
     await fetchCodePreview (repository.name, repository.meta.preview, true);
   };
 
   if (write)
   {
-    writeFileSync (`${CONTENT_ROOT}/Repositories.js`, `export default ${ JSON.stringify (repositories) };`);
+    writeFileSync (`${CONTENT_ROOT}/Repositories.js`,   `export default ${ JSON.stringify (repositories) };`);
     writeFileSync (`${CONTENT_ROOT}/Repositories.d.ts`, "export declare module 'Repositories';");
   };
 
@@ -377,4 +368,3 @@ async function fetchShowcase (write: boolean = false)
 }
 
 fetchShowcase (true);
-// fetchReadme ("portfolio", false);
