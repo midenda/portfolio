@@ -1,6 +1,7 @@
 :root 
 {
-  --preview-lines: 0;
+  --preview-lines: 100;
+  --preview-width: 40vw;
 }
 
 .Heading header
@@ -85,7 +86,7 @@
 .CodePreview pre
 {
   display: block;
-  width: 40vw;
+  width: var(--preview-width);
   padding: 0px 10px;
   margin: 0px;
 

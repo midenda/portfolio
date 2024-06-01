@@ -12,8 +12,11 @@ const project = window.location.pathname.split ("/")[2];
 const preview: Preview = await import (`frontend/public/content/${project}-preview.js`)
   .then (importObject => new Promise ((resolve, reject) => { resolve (importObject.default) }));
 
+const rootStyle: CSSStyleDeclaration = document.querySelector <HTMLElement> (":root")!.style;
+
 document.title = `Project: ${project}`;
-document.querySelector <HTMLElement> (":root")!.style.setProperty ("--preview-lines", `${preview.lines}`);
+rootStyle.setProperty ("--preview-lines", `${preview.lines}`);
+rootStyle.setProperty ("--preview-width", `${preview.width}`);
 
 const readme = repositories [ repositories.map ((repo: any) => repo.name).indexOf (project) ].readme;
 

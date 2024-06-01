@@ -314,7 +314,7 @@ async function fetchCodePreview (repository: string, path: string, caption: stri
     caption: caption, //TODO: Improve preview caption generation - top level comment?
     content: replaceReservedCharacters (file.content), //TODO: Search through file for content
     lines:   lines.length || 100,
-    width:   linewidth
+    width:   linewidth || "40vw"
   };
 
   if (write)
