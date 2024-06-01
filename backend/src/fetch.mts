@@ -300,6 +300,12 @@ async function fetchCodePreview (repository: string, path: string, caption: stri
 
   const lines = file.content.split ("\n");
 
+  for (let i: number = lines.length - 1; i > 0; i--) 
+  {
+    if (lines [i] != "") break;
+    lines.pop ();
+  };
+
   let linewidth = 0;
   for (const line of lines)
   {
