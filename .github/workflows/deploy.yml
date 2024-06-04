@@ -89,8 +89,10 @@ jobs:
 
     - name: Zero ASG capacity
       run: | 
-        aws autoscaling set-desired-capacity \
+        aws autoscaling update-auto-scaling-group \
         --auto-scaling-group-name portfolio-asg \
+        --min-size 0 \
+        --max-size 0 \
         --desired-capacity 0 \
         --no-honor-cooldown
       if: ( success() || failure() )  &&  ${{ env.TIME }} < 7
