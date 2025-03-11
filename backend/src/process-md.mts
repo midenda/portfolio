@@ -83,7 +83,7 @@ export function format (markdown: string): Output
 
   for (const line of lines)
   {
-    const lineSegments: Line = replaceLinks (line.replaceAll ("#", "")); 
+    const lineSegments: Line = replaceLinks (line.replaceAll ("# ", "").replaceAll ("#", "")); 
 
     if (line [0] == "#")
     {
@@ -103,10 +103,21 @@ export function format (markdown: string): Output
   };
   sections.push (section);
 
+  let description: Line = [""];
+
+  for (const section of sections)
+  {
+    if (section [0][0] != "") 
+    {
+      description = section [0];
+      break;
+    };
+  };
+
   const result: Output = 
   {
     title: headings [0], 
-    description: sections [0][0],
+    description: description, // TODO: portfolio has no description
     sections: headings.map ((heading, i) => 
     ({          
       heading: heading, 
