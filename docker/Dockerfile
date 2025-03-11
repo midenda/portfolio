@@ -1,6 +1,6 @@
-ARG VERSION_NODE=21.6.2
-ARG VERSION_DOTNET=7.0
-ARG VERSION_NVM=v0.39.4
+ARG VERSION_NODE=22.14.0
+ARG VERSION_NVM=v0.40.1
+ARG VERSION_DOTNET=9.0
 
 # Build and publish dotnet backend
 FROM mcr.microsoft.com/dotnet/sdk:$VERSION_DOTNET AS build-dotnet
@@ -32,7 +32,7 @@ RUN npm install
 
 COPY . .
 
-RUN --mount=type=secret,id=token GITHUB_AUTH_TOKEN=$(cat /run/secrets/token) \
+RUN --mount=type=secret,id=token GITHUB_AUTH_TOKEN=$(cat /run/secrets/GITHUB_AUTH_TOKEN) \
 npm run --prefix ./ build
 
 
@@ -60,8 +60,13 @@ RUN yum -y update && \
 # Switch to interactive mode shell for installs
 SHELL ["/bin/bash", "--login", "-i", "-c"]
 
-ENV VERSION_NODE=21.6.2
-ENV VERSION_NVM=v0.39.4
+ARG VERSION_NODE
+ARG VERSION_NVM
+ARG VERSION_DOTNET
+
+ENV VERSION_NODE=$VERSION_NODE
+ENV VERSION_NVM=$VERSION_NVM
+ENV VERSION_DOTNET=$VERSION_DOTNET
 
 # Install Node (AWS Amplify requirement)
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${VERSION_NVM}/install.sh | bash
@@ -72,7 +77,7 @@ RUN . ~/.nvm/nvm.sh && \
 # Install .NET 
 RUN curl -o dotnet-install.sh https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh
 RUN chmod +x ./dotnet-install.sh
-RUN ./dotnet-install.sh --channel 7.0 --runtime aspnetcore
+RUN ./dotnet-install.sh --channel $VERSION_DOTNET --runtime aspnetcore
 
 # Switch back to non-interactive shell
 SHELL ["/bin/bash", "--login", "-c"]
