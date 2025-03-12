@@ -1,6 +1,6 @@
-**/node_modules
-**/bin/
-**/obj/
+node_modules/
+**/bin
+**/obj
 .DS_Store
 .vscode
 dev-local
